@@ -49,11 +49,11 @@ n_cols = len(blurred[0])
 size =  n_rows * n_cols
 E = np.zeros((blurred.shape), np.float64)  # array for gradient magnitudes
 E_vect = np.zeros((n_cols,n_rows,2), np.float64) # array for gradient vectors
-print(E_vect.shape)
+
 m = blurred  # array for pixel 'masses'
 E_sum = 0
 sum_count = 0
-on_edge = [0,224]  # indicies where the pixel is on the edge 
+on_edge = [0,n_rows-1]  # indicies where the pixel is on the edge 
 
 # search through pixel array and calculate E
 for i in range(n_cols):
@@ -90,13 +90,13 @@ for i in range(n_cols):
 sigma = np.sqrt(sigma)
 
 # determine optimal threshold values
-t1a,t2a = obtain_thresholds(1.2,sigma,E_ave)  # if sigma is large k should be small, and vice versa 
+t1a,t2a = obtain_thresholds(0.7,sigma,E_ave)  # if sigma is large k should be small, and vice versa 
 new_image1 = cv2.Canny(blurred, t1a, t2a)
 
-t1b,t2b = obtain_thresholds(1.4,sigma,E_ave)  # if sigma is large k should be small, and vice versa 
+t1b,t2b = obtain_thresholds(0.3,sigma,E_ave)  # if sigma is large k should be small, and vice versa 
 new_image2 = cv2.Canny(blurred, t1b, t2b)
 
-t1c,t2c = obtain_thresholds(1.6,sigma,E_ave)  # if sigma is large k should be small, and vice versa 
+t1c,t2c = obtain_thresholds(0.5,sigma,E_ave)  # if sigma is large k should be small, and vice versa 
 new_image3 = cv2.Canny(blurred, t1c, t2c)
 
 
@@ -104,4 +104,4 @@ new_image3 = cv2.Canny(blurred, t1c, t2c)
 visualise_field(n_cols,n_rows,E_vect[:,:,0], E_vect[:,:,1])
 
 # plot new image
-#show_new()
+show_new()
