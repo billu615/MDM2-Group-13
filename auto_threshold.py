@@ -25,7 +25,7 @@ def plot_img(imgs):
     plt.show()
 
 #Load an image in grayscale
-image = cv2.imread("./Lena_image.jpg", cv2.IMREAD_GRAYSCALE)
+image = cv2.imread("./lena.jpg", cv2.IMREAD_GRAYSCALE)
 #image2 = cv2.imread("./fracture.jpg", cv2.IMREAD_GRAYSCALE)
 image2 = cv2.imread("./ferarri.jpg", cv2.IMREAD_GRAYSCALE)
 
