@@ -36,7 +36,7 @@ def visualise_field(x_max,y_max,v_x,v_y):
 
 
 #Load an image in grayscale
-image = cv2.imread("./Lena_image.jpg", cv2.IMREAD_GRAYSCALE)
+image = cv2.imread("./lena.jpg", cv2.IMREAD_GRAYSCALE)
 
 # blur image
 blurred = cv2.GaussianBlur(image, (5,5), 1.4)
