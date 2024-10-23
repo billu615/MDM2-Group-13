@@ -61,5 +61,4 @@ ax4.set_title('Canny with noisy image')
 ax4.imshow(canny_seasoned, cmap='grey')
 fig.suptitle("Adding Salt and Pepper Noise to the Canny Algorithm ")
 fig.tight_layout()
-
 plt.show()
