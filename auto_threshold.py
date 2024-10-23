@@ -26,8 +26,8 @@ def plot_img(imgs):
 
 #Load an image in grayscale
 image = cv2.imread("./lena.jpg", cv2.IMREAD_GRAYSCALE)
-#image2 = cv2.imread("./fracture.jpg", cv2.IMREAD_GRAYSCALE)
-image2 = cv2.imread("./ferarri.jpg", cv2.IMREAD_GRAYSCALE)
+image2 = cv2.imread("./blurred_circle.jpg", cv2.IMREAD_GRAYSCALE)
+#image2 = cv2.imread("./ferarri.jpg", cv2.IMREAD_GRAYSCALE)
 
 images = [image, image2]
 # blur image
