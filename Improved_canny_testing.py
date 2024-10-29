@@ -84,11 +84,11 @@ def show_six(images):
     ax2.imshow(images[2], cmap='gray')
     #ax4.set_title(f"t1 = {t1c:.2f}, t2 = {t2c:.2f}")
 
-    ax5.set_title(f"k = {ks[1]} (no noise)", fontsize=font_size)
+    ax5.set_title(f"k = {ks[1]} (noise)", fontsize=font_size)
     ax4.set_axis_off()
     ax5.imshow(images[3], cmap='gray')
 
-    ax3.set_title(f"k = {ks[2]} (noise)", fontsize=font_size)
+    ax3.set_title(f"k = {ks[2]} (no noise)", fontsize=font_size)
     ax5.set_axis_off()
     ax3.imshow(images[4], cmap='gray')
 
