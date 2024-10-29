@@ -13,6 +13,9 @@ def get_threshold(img, sigma):
 
     return lower, upper
 
+
+
+
 def plot_img(imgs):
     fig,((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
     axs = [ax1, ax2, ax3, ax4]
@@ -20,6 +23,7 @@ def plot_img(imgs):
     axs[3].set_title(f"T_low = {t_0s[1]:.2f}, T_high = {t_1s[1]:.2f}")
 
     for i, img in enumerate(imgs):
+        axs[i].axis('off')
         axs[i].imshow(img, cmap='grey')   
     fig.tight_layout()    
     plt.show()
