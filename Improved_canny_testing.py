@@ -3,6 +3,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+def get_threshold(img, sigma=0.33):
+    # Compute the median of the single channel pixel intensities
+    v = np.median(img)
+
+    # Apply automatic Canny edge detection using the computed median
+    lower = int(max(0, (1.0 - sigma) * v))
+    upper = int(min(255, (1.0 + sigma) * v))
+
+    return lower, upper
+
 def salt_pepper(img, salt_prob, pepper_prob):
     noisy_image = np.copy(image)
     row,col = img.shape
@@ -56,6 +66,33 @@ def show_new(images):
     fig.savefig("Newtonian_Canny_noisy.png")
     plt.show()
 
+def add_gaussian_noise(img, mean=0, sigma=25):
+    gaussian_noise = np.random.normal(mean, sigma, img.shape)
+    
+    noisy_image = img + gaussian_noise
+    
+    noisy_image = np.clip(noisy_image, 0, 255).astype(np.uint8)
+    
+    return noisy_image
+
+def show_seven(images):
+    
+    font_size = 8
+    
+    fig, ((ax1, ax2, ax3),(ax4, ax6, ax8),(ax5,ax7,ax9)) = plt.subplots(3,3)
+    fig.set_size_inches(5,5.5)
+    axes = [ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8,ax9]
+    titles = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)','(h)', '(i)']
+    for i, ax in enumerate(axes):
+        ax.set_axis_off() 
+        ax.set_title(titles[i], fontsize=font_size)
+        ax.imshow(images[i], cmap='gray')
+            
+    
+    
+    fig.subplots_adjust(wspace=0.005, hspace=0.005)
+    fig.tight_layout()
+    fig.savefig("noise_canny_circle.png")
 
 def show_six(images):
 
@@ -97,19 +134,18 @@ def show_six(images):
     ax6.imshow(images[5], cmap='gray')
 
     fig.suptitle("Testing the 'Newtonian' Canny Algorithm ", fontsize=font_size)
-    fig.subplots_adjust(wspace=0.1, hspace=0.1)
+    fig.subplots_adjust(wspace=0.5, hspace=0.5)
 
-    fig.tight_layout(pad=0.5)
+    fig.tight_layout()
 
-    fig.savefig("Newtonian_Canny.png")
+    fig.savefig("Noisy_canny.png")
     plt.show()
-
-
 
 
 def visualise_field(x_max,y_max,v_x,v_y):  
     x, y = np.meshgrid(np.linspace(0, x_max, x_max), np.linspace(0, y_max, y_max))
     
+    v_y = v_y[::-1]
     # Plot the vector field
     plt.quiver(x, y, v_x, v_y)
     plt.xlabel('X-axis')
@@ -121,17 +157,27 @@ def visualise_field(x_max,y_max,v_x,v_y):
 
 #Load an image in grayscale
 image = cv2.imread("./lena.jpg", cv2.IMREAD_GRAYSCALE)
+image = cv2.imread("./cropped_circle.png", cv2.IMREAD_GRAYSCALE)
+
+#image = cv2.imread("./lena.jpg", cv2.IMREAD_GRAYSCALE)
 #image = cv2.imread("./Lena_image.jpg", cv2.IMREAD_GRAYSCALE)
-noisy = salt_pepper(image, 0.2 ,0.2)
+salt_noisy = salt_pepper(image, 0.2 ,0.2)
+gaus_noisy = add_gaussian_noise(image, sigma=10)
 # blur image
 blurred_im = cv2.GaussianBlur(image, (5,5), 1.4)
 
-noise_blurred = cv2.GaussianBlur(noisy, (5,5), 1.4)
+noise_blurred = cv2.GaussianBlur(salt_noisy, (5,5), 1.4)
+noise_blurred2 = cv2.GaussianBlur(gaus_noisy, (5,5), 1.4)
+new_images = []
 
-blurred_imgs = [blurred_im, noise_blurred,  blurred_im, noise_blurred]
+# perform traditional canny
+new_images.append(cv2.Canny(noise_blurred, 190,300))
+new_images.append(cv2.Canny(noise_blurred2, 190,300))
+
+
+blurred_imgs = [noise_blurred, noise_blurred2]
 # apply to newton's laws
 G = np.sqrt(1/2)
-new_images = []
 for n, blurred in enumerate(blurred_imgs):
         
     n_rows = len(blurred)
@@ -180,13 +226,14 @@ for n, blurred in enumerate(blurred_imgs):
     sigma = np.sqrt(sigma)
 
     # determine optimal threshold values
-    ks = [0.5, 0.5, 1.1, 1.1]
+    ks = [0.5, 1.4]
     #t1a,t2a = obtain_thresholds(ks[1],sigma,E_ave)  # if sigma is large k should be small, and vice versa 
     #new_image1 = cv2.Canny(blurred, t1a, t2a)
 
     #new_image1 = cv2.Canny(blurred,190,300)
 
     t1b,t2b = obtain_thresholds(ks[n],sigma,E_ave)  # if sigma is large k should be small, and vice versa 
+    print(t1b, t2b)
     new_images.append(cv2.Canny(blurred, t1b, t2b))
 
 #t1c,t2c = obtain_thresholds(ks[6],sigma,E_ave)  # if sigma is large k should be small, and vice versa 
@@ -196,9 +243,17 @@ for n, blurred in enumerate(blurred_imgs):
 # visualise vector field
 #visualise_field(n_cols,n_rows,E_vect[:,:,0], E_vect[:,:,1])
 
+t1,t2 = get_threshold(noise_blurred, 0.33)
+T1,T2 = get_threshold(noise_blurred2, 0.33)
+new_images.append(cv2.Canny(noise_blurred, t1,t2))
+new_images.append(cv2.Canny(noise_blurred, T1,T2))
+
+
 # plot new image
 
-six_imgs = [image, noisy, new_images[0], new_images[1], new_images[2], new_images[3]]
+six_imgs = [image, noise_blurred, new_images[0], new_images[1], new_images[2], new_images[3]]
+seven_imgs = [image, noise_blurred, noise_blurred2, new_images[0], new_images[1], new_images[2], new_images[3], new_images[4] ,new_images[5]]
 #show_new(images=[image, noisy, new_images[0], new_images[1]])
 
-show_six(images=six_imgs)
+show_seven(images=seven_imgs)
+plt.show()

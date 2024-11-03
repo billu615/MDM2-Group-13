@@ -16,7 +16,7 @@ def get_threshold(img, sigma=0.33):
 def salt_pepper(img, salt_prob, pepper_prob):
     noisy_image = np.copy(image)
     row,col = img.shape
-    num_salt = np.ceil(salt_prob * image.size)
+    num_salt = np.ceil(salt_prob * img.size)
     coords = [np.random.randint(0, i, int(num_salt)) for i in image.shape]
     noisy_image[coords[0], coords[1]] = 255
     
@@ -48,15 +48,14 @@ T1_2,T2_2 = get_threshold(seasoned_blur, sigmas[2])
 
 #print(t1, t2, T1, T2)
 
-'''t1_1, t2_1 = (190, 300)
+t1_1, t2_1 = (190, 300)
 t1_2, t2_2 = (80, 180)
-T1_1, T2_1 = (80, 180)
-T1_2, T2_2 = (190, 300)
-'''
+T1_1, T2_1 = (190, 300)
+T1_2, T2_2 = (80, 180)
 
 new1 = cv2.Canny(original_blur, t1_1,t2_1)
-new2 = cv2.Canny(original_blur, T1_1,T2_1)
-new3 = cv2.Canny(seasoned_blur, t1_2,t2_2)
+new2 = cv2.Canny(original_blur, t1_2,t2_2)
+new3 = cv2.Canny(seasoned_blur, T1_1,T2_1)
 new4 = cv2.Canny(seasoned_blur, T1_2,T2_2)
 
 
@@ -94,9 +93,9 @@ ax6.set_title(f'$T_l = ${T1_2}, $T_h = ${T2_2} (noise)', fontsize=font_size)
 ax6.imshow(new4, cmap='grey')
 ax6.set_axis_off()
 
-fig.suptitle("Testing the Median-Based Canny Algorithm", fontsize=font_size)
+#fig.suptitle("Testing the Traditional Canny Algorithm", fontsize=font_size)
 fig.subplots_adjust(wspace=0.1, hspace=0.1)
 fig.tight_layout()
 
-fig.savefig("median_canny.png")
+fig.savefig("basic_canny.png")
 plt.show()
