@@ -11,23 +11,13 @@ def add_gaussian_noise(image, mean=0, sigma=25):
     
     return noisy_image
 
-image_path = 'lena_image.jpg'
+image_path = 'lenna.jpg'
 image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
 mean = 0
-sigma = 10
-noisy_1 = add_gaussian_noise(image, mean, sigma)
-noisy_2 = add_gaussian_noise(image, mean, 20)
+noisy = add_gaussian_noise(image, mean)
 
 plt.figure(figsize=(10, 5))
-plt.subplot(1, 2, 1)
-plt.title("Sigma = 10")
-plt.imshow(noisy_1, cmap='gray')
+plt.imshow(noisy, cmap='gray')
 plt.axis("off")
-
-plt.subplot(1, 2, 2)
-plt.title("Signma = 20")
-plt.imshow(noisy_2, cmap='gray')
-plt.axis("off")
-
-plt.show()
+plt.imsave('n_gaus_lenna.jpg', noisy, cmap='gray')
