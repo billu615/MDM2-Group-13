@@ -20,8 +20,6 @@ def get_threshold(img, sigma=0.33):
     return lower, upper
 
 
-
-
 def salt_pepper(img, salt_prob, pepper_prob):
     """Function returning a noisy version of the image passed in using salt and pepper noise"""
     noisy_image = np.copy(img)
@@ -51,8 +49,7 @@ def check_edges(true_edges, noisy_edges):
     for noisy_i in noisy_edge_index:
         count+=1
         distances = np.linalg.norm(true_edge_index - noisy_i, axis=1)
-        if count == 1:
-            print(distances.shape)
+        
         min_distances1.append(np.min(distances))
 
     # Find shortest distances between every edge in true and noisy images
@@ -60,7 +57,8 @@ def check_edges(true_edges, noisy_edges):
     for true_i in true_edge_index:
         distances = np.linalg.norm(noisy_edge_index - true_i, axis=1)
         min_distances2.append(np.min(distances))
-    
+        if count == 1:
+                print(distances.shape)
     mean1 = np.mean(min_distances1)
     mean2 = np.mean(min_distances2)
 
@@ -77,6 +75,7 @@ def add_gaussian_noise(img, mean=0, sigma=25):
     
     return noisy_image
 
+#traditional canny algorithm
 def traditional(image, salty, gauss):
     new_images = []
 
@@ -86,11 +85,12 @@ def traditional(image, salty, gauss):
     blurred_gauss =cv2.GaussianBlur(gauss, (5,5), 1.4)
     
     # Perform Canny
-    new_images.append(cv2.Canny(blurred_img, 80, 180))
+    new_images.append(cv2.Canny(blurred_img, 50, 180))
     new_images.append(cv2.Canny(blurred_salt, 190, 300))
     new_images.append(cv2.Canny(blurred_gauss, 100, 255))
 
     return new_images
+
 
 def median_based(image, salty, gauss, sigma=0.33):
     """median based canny algorithm"""
@@ -112,6 +112,7 @@ def median_based(image, salty, gauss, sigma=0.33):
     new_images.append(cv2.Canny(blurred_gauss, t1_3,t2_3))
 
     return new_images
+
 
 def newtonian(image, salty, gauss):
 
@@ -172,13 +173,9 @@ def newtonian(image, salty, gauss):
                 sigma += ((abs(E[i][j]-E_ave))**2)/sum_count
 
         sigma = np.sqrt(sigma)
-
+        
         # determine optimal threshold values
-        ks = [0.6, 1.4, 0.8]
-        #t1a,t2a = obtain_thresholds(ks[1],sigma,E_ave)  # if sigma is large k should be small, and vice versa 
-        #new_image1 = cv2.Canny(blurred, t1a, t2a)
-
-        #new_image1 = cv2.Canny(blurred,190,300)
+        ks = [0.1, 1.4, 0.8]
 
         t1b,t2b = obtain_thresholds(ks[n],sigma,E_ave)  # if sigma is large k should be small, and vice versa 
         print(t1b, t2b)
@@ -217,31 +214,5 @@ print("Min distance value for Newtonian Canny with gaussian: ", check_edges(newt
 print("Min distance value for median-based Canny with salt and pepper:", check_edges(median_imgs[0], median_imgs[1]))
 print("Min distance value for median-based Canny with gaussian: ", check_edges(median_imgs[0], median_imgs[2]))
 
-# add noise
-#seasoned = salt_pepper(image, salt_prob=0.2, pepper_prob=0.2)
-
-# gaussian blur
-#blurred_img =cv2.GaussianBlur(image, (5,5), 1.4)
-#blurred_noise =cv2.GaussianBlur(seasoned, (5,5), 1.4)
-
-# perform Canny
-
-# set thresholds
-#t1_1,t2_1 = get_threshold(blurred_img, sigmas[0])
-#T1_1,T2_1 = get_threshold(blurred_noise, sigmas[0])
-#t1_2,t2_2 = get_threshold(blurred_img, sigmas[2])
-#T1_2,T2_2 = get_threshold(blurred_noise, sigmas[2])
-
-
-"""t1_1, t2_1 = (190, 300)
-T1_1, T2_1 = (190, 300)
-t1_2, t2_2 = (80, 180)
-T1_2, T2_2 = (80, 180)
-
-new1 = cv2.Canny(blurred_img, t1_1,t2_1)
-new2 = cv2.Canny(blurred_img, t1_2,t2_2)
-new1_noise = cv2.Canny(blurred_noise, T1_1,T2_1)
-new2_noise = cv2.Canny(blurred_noise, T1_2,T2_2)
-
-check_edges(new1,new1_noise)
-"""
+plt.figure()
+plt.bar()
