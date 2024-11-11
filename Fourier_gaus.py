@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import cv2
 
 
-image_path = 'lenna.jpg'
+image_path = 'n_gaus_lenna.jpg'
 image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
 
@@ -21,32 +21,10 @@ filtered_shifted = f_transform_shifted * mask
 filtered_image = np.fft.ifft2(np.fft.ifftshift(filtered_shifted))
 filtered_image = np.abs(filtered_image)
 
-plt.figure(figsize=(18, 6))
-
-plt.subplot(1, 3, 1)
-plt.title("Original Image")
-plt.imshow(image, cmap='gray')
-plt.axis('off')
-
-
-plt.subplot(1, 3, 2)
-plt.title("Magnitude Spectrum")
-plt.imshow(magnitude_spectrum, cmap='gray')
-plt.axis('off')
-
-
-plt.subplot(1, 3, 3)
-plt.title("Filtered Image (Low-Pass)")
-plt.imshow(filtered_image, cmap='gray')
-plt.axis('off')
-
-plt.tight_layout()
-plt.savefig('comparison_image.png', format='png')
-plt.show()
-
 plt.imshow(filtered_image, cmap='gray')
 plt.axis('off')
 plt.show()
-cv2.imwrite('low_pass_image.png', filtered_image)
+cv2.imwrite('lp_gaus_lenna.png', filtered_image)
+
 
 
